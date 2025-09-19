@@ -36,7 +36,7 @@ export const streamingAccounts = [
     price: 8.99,  
     duration: 'Mensual',  
     features: ['Música Sin Anuncios', 'Descargas Offline', 'Podcasts'],  
-    image: '/images/spotify.jpg',  
+    image: '/images/spotify.png',  
     stock: 100  
   },  
   {  
@@ -46,7 +46,7 @@ export const streamingAccounts = [
     price: 11.99,  
     duration: 'Anual',  
     features: ['Envíos Gratis', 'Prime Video', 'Música Ilimitada'],  
-    image: '/images/prome-video.jpg',  
+    image: '/images/prime-video.jpg',  
     stock: 40  
   }  
 ];
