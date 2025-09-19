@@ -6,11 +6,12 @@ import Cart from './components/Cart';
 import CheckoutModal from './components/CheckoutModal';
 import PaymentModal from './components/PaymentModal';
 import Toast from './components/Toast';
-import Login from './components/Login'; // Importa el componente de login
+import LoginModal from './components/LoginModal'; // Importa el nuevo componente de modal de login
 import { streamingAccounts } from './mock/streamingAccounts';
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Nuevo estado para el login
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // Nuevo estado para el modal de login
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,9 +28,9 @@ const App = () => {
   };
 
   const handleAddToCart = (account) => {
-    // Si el usuario no está autenticado, no permite añadir al carrito
     if (!isAuthenticated) {
       addToast('Debes iniciar sesión para comprar.', 'error');
+      setIsLoginOpen(true); // Abre el modal de login
       return;
     }
 
@@ -73,23 +74,23 @@ const App = () => {
     setIsCartOpen(!isCartOpen);
   };
   
-  // Función para manejar el login
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
+    setIsLoginOpen(false);
     addToast('¡Bienvenido de nuevo!', 'success');
   };
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
-  // Lógica principal de renderizado
-  if (!isAuthenticated) {
-    return <Login onLoginSuccess={handleLoginSuccess} />;
-  }
-
-  // El resto de la aplicación se muestra solo si el usuario está autenticado
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 relative">
-      <Header cartCount={cart.length} isCartOpen={isCartOpen} onToggleCart={toggleCart} />
+      <Header
+        cartCount={cart.length}
+        isCartOpen={isCartOpen}
+        onToggleCart={toggleCart}
+        onLoginClick={() => setIsLoginOpen(true)}
+        isAuthenticated={isAuthenticated}
+      />
       <main className="container mx-auto px-4 py-8">
         <motion.section
           className="mb-12"
@@ -146,6 +147,17 @@ const App = () => {
         total={total}
         onConfirm={handleConfirmPayment}
       />
+
+      {/* Modal de Login (condicional) */}
+      <AnimatePresence>
+        {isLoginOpen && (
+          <LoginModal
+            onLoginSuccess={handleLoginSuccess}
+            onClose={() => setIsLoginOpen(false)}
+            addToast={addToast}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Sistema de Toasts */}
       <div className="fixed top-20 right-4 z-50 space-y-2">
